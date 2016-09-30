@@ -10,11 +10,12 @@ if __name__ == '__main__':
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.connect((server, port))
     (client, clientPort) = s.getsockname()
-    dataout = "ex0 128.83.144.56-" + str(port) + " " + client + "-" + str(clientPort) + " 3933 R.Delfin.Garcia\n";
+    dataout = "ex0 128.83.144.56-" + str(port) + " " + client + "-" + str(clientPort) + " 3933 R.DelfinGarcia\n";
     #print("Sending ", dataout)
     s.send(dataout.encode('utf-8'))
-    data = s.recv(512)
+    data1 = s.recv(512)
+    data2 = s.recv(512)
     s.close()
-    print("Result: ", data)
+    print("Result: ", data1, "\n", data2)
 
 
