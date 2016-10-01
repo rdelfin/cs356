@@ -1,10 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import socket
 
 server = "paris.cs.utexas.edu"
 serverIp = "128.83.144.56"
-clientIp = "70.114.214.222"   # Necessary since my PC is behind a virtual network
+#clientIp = "70.114.214.222"   # Necessary since my PC is behind a virtual network
 port = 35603
 usernum = 3933          # I just really like this number
 portResponse = 3933     # You have no idea how much
@@ -66,7 +66,7 @@ def ex0(client, clientPort, clientS):
     print("Result: ", line1b)
 
 def ex1ServerCall(servernum):
-    return ("CS 356 server calling " + int(servernum) + "\n").encode('utf-8')
+    return ("CS 356 server calling " + str(servernum) + "\n").encode('utf-8')
 
 def ex1(client, clientPort, clientS, serverS):
     req1 = initialEx1Req(serverIp, port, client, portResponse, usernum, username)
@@ -89,14 +89,16 @@ def ex1(client, clientPort, clientS, serverS):
 
     print("Sent over socket 2: ", sock2msg, "\n")
 
-    responsesocket.close()
-    serverS.close()
-
     line1b = clientS.recv(512)
     line2b = clientS.recv(512)
 
 
     print("Response: \n\t", line1, "\n\t",  line2, "\n")
+
+
+    responsesocket.close()
+    serverS.close()
+
 
 
 if __name__ == '__main__':
@@ -110,7 +112,7 @@ if __name__ == '__main__':
 
     print("Listening on " + client, ":", portResponse)
 
-    ex1(clientIp, clientPort, clientS, serverS)
+    ex1(client, clientPort, clientS, serverS)
 
     clientS.close()
 
