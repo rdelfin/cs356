@@ -65,8 +65,10 @@ def ex0(client, clientPort, clientS):
 
     print("Result: ", line1b)
 
-def ex1ServerCall(servernum):
-    return ("CS 356 server calling " + str(servernum) + "\n").encode('utf-8')
+def ex1FinalResponse(snum, newsnum):
+    result = str(snum + 1) + " "
+    result += str(newsnum + 1) + "\n"
+    return result
 
 def ex1(client, clientPort, clientS, serverS):
     req1 = initialEx1Req(serverIp, port, client, portResponse, usernum, username)
@@ -78,22 +80,22 @@ def ex1(client, clientPort, clientS, serverS):
 
     print("Response: \n\t", line1, "\n\t",  line2, "\n")
 
-
+    servernum = int(line2.decode().split(" ")[3])
 
     (responsesocket, addr) = serverS.accept()
 
-    print("")
+    sock2Line1 = responsesocket.recv(512)
+    listSock2Resp = sock2Line1.decode().split(" ")
+    print("CS 356 server sent ", listSock2Resp[4])
+    
+    resp = ex1FinalResponse(servernum, int(listSock2Resp[4]))
+    responsesocket.send(resp.encode('utf-8'))
 
-    sock2msg = ex1ServerCall(servernum)
-    responsesocket.send(sock2msg)
-
-    print("Sent over socket 2: ", sock2msg, "\n")
+    print("Request to Socket 2: ", resp)
 
     line1b = clientS.recv(512)
-    line2b = clientS.recv(512)
 
-
-    print("Response: \n\t", line1, "\n\t",  line2, "\n")
+    print("Response: ", line1b)
 
 
     responsesocket.close()
