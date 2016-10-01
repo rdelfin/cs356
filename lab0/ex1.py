@@ -4,6 +4,7 @@ import socket
 
 server = "paris.cs.utexas.edu"
 serverIp = "128.83.144.56"
+clientIp = "70.114.214.222"   # Necessary since my PC is behind a virtual network
 port = 35603
 usernum = 3933          # I just really like this number
 portResponse = 3933     # You have no idea how much
@@ -81,6 +82,8 @@ def ex1(client, clientPort, clientS, serverS):
 
     (responsesocket, addr) = serverS.accept()
 
+    print("")
+
     sock2msg = ex1ServerCall(servernum)
     responsesocket.send(sock2msg)
 
@@ -103,9 +106,11 @@ if __name__ == '__main__':
 
     serverS = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     serverS.bind((socket.gethostname(), portResponse))
-    serverS.listen(5)
+    serverS.listen(10)
 
-    ex1(client, clientPort, clientS, serverS)
+    print("Listening on " + client, ":", portResponse)
+
+    ex1(clientIp, clientPort, clientS, serverS)
 
     clientS.close()
 
