@@ -20,11 +20,49 @@ def package_request(requestData, clientCookie):
     result = 0
 
     tempPackage  = struct.pack('!HBBIIHH', header, labN, version, clientCookie, requestData, checksum, result)
-    checksum = calc_checksum(tempPackage)
-    return struct.pack('!HBBIIHH', header, labN, version, clientCookie, requestData, checksum, result)
+    print("Pre-checksum package:")
+    print_raw(tempPackage)
+    checksum = get_checksum(tempPackage)
+    result = struct.pack('!HBBIIHH', header, labN, version, clientCookie, requestData, checksum, result)
+    print("Post-checksum package (", checksum, "):")
+    print_raw(result)
+    print("")
+    return result
 
-def good_response(response):
-    return False
+def good_response(response, ssn, cookie):
+    data = struct.unpack('!HBBIIHH', response)
+    header = data[0]
+    labN = data[1]
+    version = data[2]
+    cookieRsp = data[3]
+    requestData = data[4]
+    checksum = data[5]
+    result = data[6]
+
+    if(labN != 1):
+        return False
+
+    if(((header & 0x4000) >> 14) != 1):
+        print("Not response")
+        return False
+    if(ssn != requestData):
+        print("different SSN")
+        return False
+    if(cookie != cookieRsp):
+        print("different cookie")
+        return False
+    if(((result & 0x8000) >> 15) == 1):
+        print("Error was returned by server: ", (result & 0x7fff))
+        return False
+
+    tempPackage  = struct.pack('!HBBIIHH', header, labN, version, cookieRsp, requestData, 0, result)
+
+    computedChecksum = get_checksum(tempPackage)
+    if(checksum != computedChecksum):
+        print("Checksum missmatch!")
+        return False
+
+    return True
 
 def print_raw(response):
     for i in range(4):
@@ -33,10 +71,3 @@ def print_raw(response):
         lowString = "{0:b}".format(shortLow)
         highString = "{0:b}".format(shortHight)
         print(lowString, " ", highString)
-
-def calc_checksum(tempPackage):
-    checksumTotal = 0
-    for i in range(8):
-        shortVal = get_short_network(tempPackage, i*2)
-        checksumTotal = ones_comp_add16(checksumTotal, shortVal)
-    return checksumTotal

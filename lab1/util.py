@@ -12,8 +12,15 @@ def get_int_network(string, pos):
     return sig1 + sig2 + sig3 + sig4
 
 
-# Courtesy of http://stackoverflow.com/a/29843639
-MOD = 1 << 16
-def ones_comp_add16(num1,num2):
-    result = num1 + num2
-    return result if result < MOD else (result+1) % MOD
+# Courtesy of http://stackoverflow.com/a/1769267
+def carry_around_add(a, b):
+    c = a + b
+    #           last 16b    get MSB and add
+    return (c & 0xffff) + ((c & 0x10000) >> 16)
+
+def get_checksum(msg):
+    s = 0
+    for i in range(0, len(msg), 2):
+        w = get_short_network(msg, i)
+        s = carry_around_add(s, w)
+    return ~s & 0xffff

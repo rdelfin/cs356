@@ -21,18 +21,23 @@ if __name__ == "__main__":
     address = "paris.cs.utexas.edu"
     port = 35605
     random.seed()
-    cookie = random.randint(0, 2147483647)
-    retransmit = False
+    cookie = 42
+    retransmit = True
+    count = 0
 
-    while(retransmit):
+    while(retransmit and count < 5):
+        count += 1
         try:
-            req = protocol.package_request(991926251, cookie)
+            req = protocol.package_request(111111111, cookie)
 
             sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             sock.settimeout(0.5)
 
             sock.sendto(req, (address, port))
             result = sock.recvfrom(16)
-            retransmit = !protocol.good_response(result)
+            resultString = result[0]
+            retransmit = not(protocol.good_response(resultString, 111111111, cookie))
+            protocol.print_raw(resultString)
+
         except socket.timeout:
             retransmit = True;
