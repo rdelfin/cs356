@@ -23,6 +23,9 @@ def package_request(requestData, clientCookie):
     checksum = calc_checksum(tempPackage)
     return struct.pack('!HBBIIHH', header, labN, version, clientCookie, requestData, checksum, result)
 
+def good_response(response):
+    return False
+
 def print_raw(response):
     for i in range(4):
         shortLow = get_short_network(response, i*4)
