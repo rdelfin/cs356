@@ -2,7 +2,7 @@ def get_byte(string, pos):
     return ord(string[pos])
 
 def get_short_network(string, pos):
-    return ord((string[pos]) << 8) + ord(string[pos + 1])
+    return (ord(string[pos]) << 8) + ord(string[pos + 1])
 
 def get_int_network(string, pos):
     sig1 = ord(string[pos]) << 24
