@@ -20,7 +20,7 @@ import protocol
 if __name__ == "__main__":
 
     address = "paris.cs.utexas.edu"
-    port = 35605
+    port = 35607
     random.seed()
     cookie = 42
     retransmit = True

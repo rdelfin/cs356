@@ -11,23 +11,23 @@ from util import *
 #   short result;
 # }
 
-
+# Creates a request string based on data and cookies
 def package_request(requestData, clientCookie):
+    # Default values for multiple parts
     header = 356
     labN = 1
     version  = 7
     checksum = 0
     result = 0
 
+    # Pack according to the C struct tefined at top of page
     tempPackage  = struct.pack('!HBBIIHH', header, labN, version, clientCookie, requestData, checksum, result)
-    print("Pre-checksum package:")
-    print_raw(tempPackage)
+
+    # Compute the checksum
     checksum = get_checksum(tempPackage)
-    result = struct.pack('!HBBIIHH', header, labN, version, clientCookie, requestData, checksum, result)
-    print("Post-checksum package (", checksum, "):")
-    print_raw(result)
-    print("")
-    return result
+
+    # Repackage with checksum included and return
+    return struct.pack('!HBBIIHH', header, labN, version, clientCookie, requestData, checksum, result)
 
 def good_response(response, ssn, cookie):
     data = struct.unpack('!HBBIIHH', response)
@@ -63,6 +63,11 @@ def good_response(response, ssn, cookie):
         return False
 
     return True
+
+def get_result(response):
+    data = struct.unpack('!HBBIIHH', response)
+    result = data[6]
+    return result & 0x7fff
 
 def print_raw(response):
     for i in range(4):
